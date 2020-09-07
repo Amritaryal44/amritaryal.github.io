@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Draw any figure using maths with the use of DFT(Fourier series in the exponential form) and epicycle. ">
+    <title>Drawing with Fourier Series and Epicycle - Amrit</title>
+
+    <!-- bootstrap css file -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- font awesome css file -->
+    <link rel="stylesheet" href="/css/all.min.css">
+
+    <!-- Animation css file -->
+    <link rel="stylesheet" href="/css/animate.min.css">
+
+    <!-- slick slider -->
+    <link rel="stylesheet" type="text/css" href="/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css" />
+
+    <!-- TOC -->
+    <link rel="stylesheet" href="/css/jquery-dynamic-content-menu.css">
+
+    <!-- Prism for code prettifier -->
+    <link rel="stylesheet" href="/css/prism.css">
+
+    <!-- Katex maths render -->
+    <link rel="stylesheet" href="/css/katex.min.css">
+    <link rel="stylesheet" href="/css/texmath.min.css">
+
+    <!-- custom css file -->
+    <link rel="stylesheet" href="/css/partials/_global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+</head>
+
+<body>
+    <div class="d-none" id="post-id" post-id="2"></div>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md fixed-top not-shrink animated slideInDown">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand repeat animated tada" href="/"><span>Amrit</span></a>
+
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            Menu
+          </button>
+
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#home">home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#about">about</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="index.html#gallery">gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#posts">posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#services">services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <section class="banner mb-5" id="home">
+        <div class="text container">
+            <div class="d-flex flex-column justify-content-end h-100">
+                <h1 class="animated fadeInDownBig mb-4">Drawing with Fourier Series and Epicycle</h1>
+            </div>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 wow fadeInUp" id="md-html">
+                    <p id="post-date"><i class="far fa-clock"></i>&nbsp;Sep 02, 2020</p>
+                    <h2 class="mb-3 mt-5 toc-h2"><strong>Drawing with DFT and Epicycles</strong></h2>
+<p>Draw any figure using maths with the use of DFT(fouries series in exponential form) and epicycle</p>
+<h2 class="mb-3 mt-5 toc-h2">Example</h2>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">real figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-1.jpg" alt="Map of Nepal" title="Nepal" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">generated figure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-2.gif" alt="Generated figure" title="Nepal Generated with DFT" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<h2 class="mb-3 mt-5 toc-h2">Installation</h2>
+<p>Install ffmpeg
+You will need to install ffmpeg to write the animation to video file</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ sudo apt-get update
+$ sudo apt-get install ffmpeg
+</code></pre>
+<p>Clone the repository</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ git clone https://github.com/Amritaryal44/drawing-with-DFT-and-epicycle.git
+</code></pre>
+<p>Install all package requirements for python</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ pip install -r requirements.txt
+</code></pre>
+<h2 class="mb-3 mt-5 toc-h2">DFT_epicycle explaination</h2>
+<h3 class="mb-3 mt-5 toc-h3">1. Read the image and convert to gray scale</h3>
+<pre class="language-python rounded mr-2"><code class="language-python">img <span class="token operator">=</span> cv2<span class="token punctuation">.</span>imread<span class="token punctuation">(</span><span class="token string">"nepal.png"</span><span class="token punctuation">)</span>
+img_gray <span class="token operator">=</span> cv2<span class="token punctuation">.</span>cvtColor<span class="token punctuation">(</span>img<span class="token punctuation">,</span> cv2<span class="token punctuation">.</span>COLOR_BGR2GRAY<span class="token punctuation">)</span>
+</code></pre>
+<h3 class="mb-3 mt-5 toc-h3">2. Threshold the gray image to get pure black and white image</h3>
+<pre class="language-python rounded mr-2"><code class="language-python">ret<span class="token punctuation">,</span> thresh <span class="token operator">=</span> cv2<span class="token punctuation">.</span>threshold<span class="token punctuation">(</span>img_gray<span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+</code></pre>
+<h3 class="mb-3 mt-5 toc-h3">3. Find the contour of image</h3>
+<pre class="language-python rounded mr-2"><code class="language-python">contours<span class="token punctuation">,</span> hierarchy <span class="token operator">=</span> cv2<span class="token punctuation">.</span>findContours<span class="token punctuation">(</span>thresh<span class="token punctuation">,</span> cv2<span class="token punctuation">.</span>RETR_TREE<span class="token punctuation">,</span> cv2<span class="token punctuation">.</span>CHAIN_APPROX_NONE<span class="token punctuation">)</span>
+</code></pre>
+<p>We get two contours here:</p>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center"><code>contours[0]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-3.jpg" alt="contour 1" title="Contour 1" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center"><code>contours[1]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-4.jpg" alt="contour 2" title="Contour 2" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<p>But we need <code>contours[1]</code>. so:</p>
+<pre class="language-python rounded mr-2"><code class="language-python">contours <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span>contours<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> 
+</code></pre>
+<h3 class="mb-3 mt-5 toc-h3">4. Split the points and store in <code>x_list</code> and <code>y_list</code></h3>
+<p>Without reshaping:</p>
+<pre class="language-python rounded mr-2"><code class="language-python">x_list<span class="token punctuation">,</span> y_list <span class="token operator">=</span> contours<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">-</span>contours<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>x_list<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+</code></pre>
+<blockquote class="blockquote pl-2 py-1" style="border-left: 5px solid #eee;">
+<p>Note that <code>y_list</code> is given as <code> -contours[:, :, 1]</code> because we want the y points to be upright.</p>
+</blockquote>
+<p>Output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">(5541, 1)
+</code></pre>
+<p>So the shape is in 2D. To make it 1D:</p>
+<blockquote class="blockquote pl-2 py-1" style="border-left: 5px solid #eee;">
+<p>We are making it in 1D because later we will need 1D data for making f(t)
+in <code>np.interp()</code> function</p>
+</blockquote>
+<pre class="language-python rounded mr-2"><code class="language-python">x_list<span class="token punctuation">,</span> y_list <span class="token operator">=</span> contours<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">-</span>contours<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>x_list<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+</code></pre>
+<p>Note that for reshaping <code>(a,b)</code>, <code>(-1,)</code> is similar to <code>(a*b,)</code>
+Output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">(5541,)
+</code></pre>
+<p>If you plot the points in matplotlib, you will get:</p>
+<pre class="language-python rounded mr-2"><code class="language-python">fig <span class="token operator">=</span> plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> fig<span class="token punctuation">.</span>add_subplot<span class="token punctuation">(</span><span class="token number">111</span><span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x_list<span class="token punctuation">,</span> y_list<span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>output:
+<p class="hover-img"><img src="/posts/images/2/2-5.jpg" alt="Plot without translating to origin" class="img-fluid"></p>
+The figure is not centerer somewhere at <code>(1000, -600)</code> But we want the figure to be centered at <code>(0,0)</code> for using fourier series calculation easily.</p>
+<h3 class="mb-3 mt-5 toc-h3">5. Centering the points to origin: <code>(0,0)</code></h3>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># center the contour to origin</span>
+x_list <span class="token operator">=</span> x_list <span class="token operator">-</span> np<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>x_list<span class="token punctuation">)</span>
+y_list <span class="token operator">=</span> y_list <span class="token operator">-</span> np<span class="token punctuation">.</span>mean<span class="token punctuation">(</span>y_list<span class="token punctuation">)</span>
+</code></pre>
+<p>Here, we are translating every points by mean of points. We are doing just translation operation here.
+If you plot the points in matplotlib again, you will get:</p>
+<pre class="language-python rounded mr-2"><code class="language-python">fig <span class="token operator">=</span> plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+ax <span class="token operator">=</span> fig<span class="token punctuation">.</span>add_subplot<span class="token punctuation">(</span><span class="token number">111</span><span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x_list<span class="token punctuation">,</span> y_list<span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>output:
+<p class="hover-img"><img src="/posts/images/2/2-6.jpg" alt="Plot after translation" class="img-fluid"></p></p>
+<p>Store the size information of the figure because later you will want the generated image to be fit in the figure.
+We will use it later.</p>
+<pre class="language-python rounded mr-2"><code class="language-python">xlim_data <span class="token operator">=</span> plt<span class="token punctuation">.</span>xlim<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+ylim_data <span class="token operator">=</span> plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<h3 class="mb-3 mt-5 toc-h3">6. Make a time_list from 0 to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi></mrow><annotation encoding="application/x-tex">2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span></span></span></span></eq></h3>
+<p>We are doing this, because we are rotating the circle. To rotate a circle, we need angle. Later we will use this angle to determine <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x+iy = f(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></eq> Later you will use it for calculating fourier coefficients.</p>
+<pre class="language-python rounded mr-2"><code class="language-python">t_list <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> <span class="token builtin">len</span><span class="token punctuation">(</span>x_list<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>t_list<span class="token punctuation">)</span>
+</code></pre>
+<p>Output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">[0.00000000e+00 1.13414897e-03 2.26829794e-03 ... 6.28091701e+00
+ 6.28205116e+00 6.28318531e+00]
+</code></pre>
+<p>It will go from 0 to <code>tau</code>. Tau is just equal to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><msup><mi>π</mi><mi>c</mi></msup><mo>=</mo><mn>36</mn><msup><mn>0</mn><mn>0</mn></msup></mrow><annotation encoding="application/x-tex">2\pi^c= 360^0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.664392em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">6</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span></span></span></span></span></span></span></span></eq></p>
+<h4>7. Find the fourier coefficients to approximately locate given points</h4>
+<p>Fourier Coefficient Formula is:</p>
+<blockquote class="blockquote pl-2 py-1" style="border-left: 5px solid #eee;">
+<p><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>π</mi></mrow></mfrac><msubsup><mo>∫</mo><mn>0</mn><mrow><mn>2</mn><mi>π</mi></mrow></msubsup><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo><msup><mi mathvariant="normal">e</mi><mrow><mo>−</mo><mi>j</mi><mi>n</mi><mi>t</mi></mrow></msup><mi mathvariant="normal">d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">c_n=\frac{1}{2\pi}\int_0^{2\pi} f(t)\mathrm{e}^{-jnt}\mathrm{d}x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.3648280000000002em;vertical-align:-0.35582em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mop op-symbol small-op" style="margin-right:0.19445em;position:relative;top:-0.0005599999999999772em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0090080000000001em;"><span style="top:-2.34418em;margin-left:-0.19445em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.2579000000000002em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35582em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span><span class="mord"><span class="mord"><span class="mord mathrm">e</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathrm">d</span></span><span class="mord mathnormal">x</span></span></span></span></eq></p>
+<p>where :
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>=</mo></mrow><annotation encoding="application/x-tex">c_n =</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span></span></span></span></eq> coefficient calculated which is in form <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">x+iy</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></eq> or <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><msup><mi mathvariant="normal">e</mi><mrow><mo>−</mo><mi>j</mi><mi>n</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">r\mathrm{e}^{-jnt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord"><span class="mord mathrm">e</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span></eq> where r is radius of circle and t gives the position of point in circumference of circle.</p>
+<p><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></eq> returns x, y points at time t. Note that we have created <code>time_list</code>. that was for this.
+t = time i.e from 0 to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>π</mi></mrow><annotation encoding="application/x-tex">2\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span></span></span></span></eq></p>
+</blockquote>
+<p>Please watch <a href="https://www.youtube.com/watch?v=r6sGWTCMz2k">this video</a> for better understanding.</p>
+<p>Coefficients will be in sequence like: …<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mo>−</mo><mn>2</mn></mrow></msub><mo separator="true">,</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">c_{-2}, c_{-1}, c_{0}, c_{1}, c_{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq>…</p>
+<p>More and more coefficients means better result.</p>
+<p>So we will define <code>order=100</code> for now. which goes from <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mo>−</mo><mi>o</mi><mi>r</mi><mi>d</mi><mi>e</mi><mi>r</mi></mrow></msub></mrow><annotation encoding="application/x-tex">c_{-order}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span></eq> to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mi>o</mi><mi>r</mi><mi>d</mi><mi>e</mi><mi>r</mi></mrow></msub></mrow><annotation encoding="application/x-tex">c_{order}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq></p>
+<pre class="language-python rounded mr-2"><code class="language-python">order <span class="token operator">=</span> <span class="token number">100</span>
+</code></pre>
+<p>Let us make a loop to store coefficients in <code>c</code></p>
+<pre class="language-python rounded mr-2"><code class="language-python">c <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># a list to store coefficients from -order to order</span>
+<span class="token keyword">for</span> n <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">pass</span>
+</code></pre>
+<p>Now this loop will go from -order to order.
+Let’s make a function <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></eq> so that we can get <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">x+iy</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></eq> at any time <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">t</span></span></span></span></eq>.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token keyword">def</span> <span class="token function">f</span><span class="token punctuation">(</span>t<span class="token punctuation">,</span> t_list<span class="token punctuation">,</span> x_list<span class="token punctuation">,</span> y_list<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> np<span class="token punctuation">.</span>interp<span class="token punctuation">(</span>t<span class="token punctuation">,</span> t_list<span class="token punctuation">,</span> x_list <span class="token operator">+</span> <span class="token number">1j</span><span class="token operator">*</span>y_list<span class="token punctuation">)</span>
+</code></pre>
+<p>Here, <code>np.interp()</code> is used to generate x+iy at time t.
+Let me clear you a bit.</p>
+<pre class="language-python rounded mr-2"><code class="language-python">x <span class="token operator">=</span> <span class="token number">2</span>
+xp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span>
+yp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">10</span><span class="token operator">+</span><span class="token number">20j</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token operator">+</span><span class="token number">40j</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token operator">+</span><span class="token number">60j</span><span class="token punctuation">]</span>
+y <span class="token operator">=</span> np<span class="token punctuation">.</span>interp<span class="token punctuation">(</span>x<span class="token punctuation">,</span> xp<span class="token punctuation">,</span> yp<span class="token punctuation">)</span> 
+
+<span class="token keyword">print</span> <span class="token punctuation">(</span>y<span class="token punctuation">)</span> 
+</code></pre>
+<p>output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">(20+30j)
+</code></pre>
+<p>You see it was that simple.
+Now Let’s go to the loop and use the fourier coefficient formula.</p>
+<pre class="language-python rounded mr-2"><code class="language-python">c <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># a list to store coefficients from -order to order</span>
+<span class="token keyword">for</span> n <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    coef <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span>tau<span class="token operator">*</span>quad_vec<span class="token punctuation">(</span><span class="token keyword">lambda</span> t<span class="token punctuation">:</span> f<span class="token punctuation">(</span>t<span class="token punctuation">,</span> t_list<span class="token punctuation">,</span> x_list<span class="token punctuation">,</span> y_list<span class="token punctuation">)</span><span class="token operator">*</span>np<span class="token punctuation">.</span>exp<span class="token punctuation">(</span><span class="token operator">-</span>n<span class="token operator">*</span>t<span class="token operator">*</span><span class="token number">1j</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> limit<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">,</span> full_output<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    c<span class="token punctuation">.</span>append<span class="token punctuation">(</span>coef<span class="token punctuation">)</span>
+</code></pre>
+<p><code>scipy.integrate.quad_vec()</code> is used to do defininte integration over complex data.
+Here we put <code>[0]</code> at the end of <code>quad_vec()</code> because <code>quad_vec()</code> returns <code>(value, error)</code>.
+After integration, we will append the coefficient in list.
+Let me demonstrate <code>quad_vec()</code> in simple way.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token keyword">def</span> <span class="token function">f</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+  <span class="token keyword">return</span> x<span class="token operator">+</span><span class="token number">1j</span>
+
+<span class="token comment"># using scipy.integrate.quad() method </span>
+result <span class="token operator">=</span> quad_vec<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> f<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> 
+</code></pre>
+<p>The above code does the formula:</p>
+<p><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>r</mi><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow><mo>=</mo><msubsup><mo>∫</mo><mn>0</mn><mn>3</mn></msubsup><mrow><mo stretchy="false">(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mi>j</mi><mo stretchy="false">)</mo></mrow><mi mathvariant="normal">d</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">{result}=\int_0^{3} {(x+1j)}\mathrm{d}x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">e</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">t</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.3648280000000002em;vertical-align:-0.35582em;"></span><span class="mop"><span class="mop op-symbol small-op" style="margin-right:0.19445em;position:relative;top:-0.0005599999999999772em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0090080000000001em;"><span style="top:-2.34418em;margin-left:-0.19445em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.2579000000000002em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35582em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">)</span></span><span class="mord"><span class="mord mathrm">d</span></span><span class="mord mathnormal">x</span></span></span></span></eq></p>
+<p>Try it yourself. You will get almost same output as below.
+output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">(4.5+3.000000000000001j)
+</code></pre>
+<p>Now we are done with finding coefficients.
+Note that <code>tqdm</code> is used for making progressbar. I will not explain it.
+If you want to save the coefficients for later use, you can save it.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># convert list into numpy array</span>
+c <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span>c<span class="token punctuation">)</span>
+<span class="token comment"># save it</span>
+np<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string">"coeff.npy"</span><span class="token punctuation">,</span> c<span class="token punctuation">)</span>
+</code></pre>
+<p>Hurray!!! We are almost done.</p>
+<h2 class="mb-3 mt-5 toc-h2">Now time to make animation.</h2>
+<p>This is the interesting part of this project. We will make about 300 rotating circles to draw the figure we wanted.
+Let me show you how circles and coefficients are related
+For example, we have 3 coefficients.<br>
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mo>=</mo><mo>−</mo><mn>10</mn><mo>−</mo><mn>10</mn><mi>j</mi></mrow><annotation encoding="application/x-tex">c_{-1} = -10-10j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span></eq><br>
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>0</mn></msub><mo>=</mo><mn>2</mn><mo>−</mo><mn>2</mn><mi>j</mi></mrow><annotation encoding="application/x-tex">c_{0} = 2-2j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span></eq><br>
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub><mo>=</mo><mn>10</mn><mo>+</mo><mn>5</mn><mi>j</mi></mrow><annotation encoding="application/x-tex">c_{1} = 10+5j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord">5</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span></eq><br>
+When we plot the coefficients in figure, we will get result as follow:</p>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">c_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-7.jpg" alt="coeff[0]" class="img-fluid"></p></td>
+</tr>
+<tr>
+<td style="text-align:center"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>a</mi><mi>d</mi><mi>i</mi><mi>u</mi><mi>s</mi><mo>=</mo><msqrt><mrow><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mo stretchy="false">(</mo><mo>−</mo><mn>2</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow></msqrt><mo>=</mo><mrow><mi>m</mi><mi>a</mi><mi>g</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>u</mi><mi>d</mi><mi>e</mi><mo stretchy="false">(</mo><msub><mi>c</mi><mn>0</mn></msub><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">radius = \sqrt{2^2+(-2)^2} = {magnitude(c_0)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.30499999999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">2</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-2.8950000000000005em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.30499999999999994em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">n</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">u</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo>=</mo><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">center= (0,0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">c</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mclose">)</span></span></span></span></eq></td>
+</tr>
+</tbody>
+</table>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">adding <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">c_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq> to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">c_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-8.jpg" alt="coeff[1]" class="img-fluid"></p></td>
+</tr>
+<tr>
+<td style="text-align:center"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>a</mi><mi>d</mi><mi>i</mi><mi>u</mi><mi>s</mi><mo>=</mo><msqrt><mrow><mo stretchy="false">(</mo><mn>10</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>+</mo><msup><mn>5</mn><mn>2</mn></msup></mrow></msqrt><mo>=</mo><mrow><mi>m</mi><mi>a</mi><mi>g</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>u</mi><mi>d</mi><mi>e</mi><mo stretchy="false">(</mo><msub><mi>c</mi><mn>1</mn></msub><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">radius = \sqrt{(10)^2+5^2} = {magnitude(c_1)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.30499999999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mopen">(</span><span class="mord">1</span><span class="mord">0</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord">5</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-2.8950000000000005em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.30499999999999994em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">n</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">u</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></eq> and <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo>=</mo><mo stretchy="false">(</mo><mn>0</mn><mo>+</mo><mn>2</mn><mo separator="true">,</mo><mn>0</mn><mo>+</mo><mo stretchy="false">(</mo><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mn>2</mn><mo separator="true">,</mo><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">center= (0+2,0+(-2))=(2,-2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">c</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">2</span><span class="mclose">)</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">−</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></eq></td>
+</tr>
+</tbody>
+</table>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">adding <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">c_{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span></eq> to <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">c_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></eq></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/2/2-9.jpg" alt="coeff[-1]" class="img-fluid"></p></td>
+</tr>
+<tr>
+<td style="text-align:center"><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mi>a</mi><mi>d</mi><mi>i</mi><mi>u</mi><mi>s</mi><mo>=</mo><msqrt><mrow><mo stretchy="false">(</mo><mo>−</mo><mn>10</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false">(</mo><mo>−</mo><mn>10</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow></msqrt><mo>=</mo><mrow><mi>m</mi><mi>a</mi><mi>g</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>u</mi><mi>d</mi><mi>e</mi><mo stretchy="false">(</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub></mrow><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">radius = \sqrt{(-10)^2+(-10)^2} = {magnitude(c_{-1}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.30499999999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.935em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mord">0</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord">−</span><span class="mord">1</span><span class="mord">0</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-2.8950000000000005em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"></path></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.30499999999999994em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">m</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">n</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">u</span><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></eq> <code>and</code> <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>e</mi><mi>r</mi><mo>=</mo><mo stretchy="false">(</mo><mn>2</mn><mo>+</mo><mn>10</mn><mo separator="true">,</mo><mo>−</mo><mn>2</mn><mo>+</mo><mn>5</mn><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mn>12</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">center=(2+10, -2+5)=(12,3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">c</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">−</span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">5</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span></eq></td>
+</tr>
+</tbody>
+</table>
+<p>The direction of last circle is used to plot the drawing points.
+In this way, circles are created. But we have to sort the coefficients to get the order like: <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>2</mn></mrow></msub><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">c_{0}, c_{1}, c_{-1}, c_{2}, c_{-2}, ...</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span></span></span></span></eq></p>
+<h4>1. Let’s make a function to sort the coefficients.</h4>
+<p>Our coefficient is arranged as:  <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>1</mn></msub><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">..., c_{-1}, c_{0}, c_{1}, ...</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span></span></span></span></eq></p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># Let us assume the coefficients as given in example</span>
+coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token operator">-</span><span class="token number">2j</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token operator">+</span><span class="token number">5j</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">10</span><span class="token operator">-</span><span class="token number">10j</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+order <span class="token operator">=</span> <span class="token number">1</span> 
+<span class="token keyword">def</span> <span class="token function">sort_coeff</span><span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    new_coeffs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    new_coeffs<span class="token punctuation">.</span>append<span class="token punctuation">(</span>coeffs<span class="token punctuation">[</span>order<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        new_coeffs<span class="token punctuation">.</span>extend<span class="token punctuation">(</span><span class="token punctuation">[</span>coeffs<span class="token punctuation">[</span>order<span class="token operator">+</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span>coeffs<span class="token punctuation">[</span>order<span class="token operator">-</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span>new_coeffs<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>sort_coeff<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Output:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">[ 10. +5.j -10.-10.j   2. -2.j]
+</code></pre>
+<p>Look at the output, we have sorted them in order like: <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>c</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">c_{0}, c_{1}, c_{-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span></eq></p>
+<h4>2. How to make circles and lines in matplotlib</h4>
+<p><strong>Making a circle</strong>&lt;br&gt;
+Formula for ploting the circle is :<br>
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>r</mi><mi>c</mi><mi>o</mi><mi>s</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x = rcos(\theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">c</span><span class="mord mathnormal">o</span><span class="mord mathnormal">s</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span></eq>, <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>r</mi><mi>s</mi><mi>i</mi><mi>n</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">y = rsin(\theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">s</span><span class="mord mathnormal">i</span><span class="mord mathnormal">n</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span></eq></p>
+<pre class="language-python rounded mr-2"><code class="language-python">fig<span class="token punctuation">,</span> ax <span class="token operator">=</span> plt<span class="token punctuation">.</span>subplots<span class="token punctuation">(</span><span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>set_aspect<span class="token punctuation">(</span><span class="token string">'equal'</span><span class="token punctuation">)</span> <span class="token comment"># to make the axes symmetric</span>
+
+theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># 0, ...,... , tau </span>
+r <span class="token operator">=</span> <span class="token number">20</span>
+x<span class="token punctuation">,</span> y <span class="token operator">=</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> <span class="token string">'r-'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Output:
+<p class="hover-img"><img src="/posts/images/2/2-10.jpg" alt="circle" class="img-fluid"></p></p>
+<p><strong>Making a radius in circle show direction of rotation</strong>&lt;br&gt;
+Let us copy the circle code and make a line here.&lt;br&gt;
+We will draw the line from center of circle and align at <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><msup><mn>5</mn><mn>0</mn></msup></mrow><annotation encoding="application/x-tex">45^0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">4</span><span class="mord"><span class="mord">5</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span></span></span></span></span></span></span></span></eq> = tau/8</p>
+<pre class="language-python rounded mr-2"><code class="language-python">fig<span class="token punctuation">,</span> ax <span class="token operator">=</span> plt<span class="token punctuation">.</span>subplots<span class="token punctuation">(</span><span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>set_aspect<span class="token punctuation">(</span><span class="token string">'equal'</span><span class="token punctuation">)</span> <span class="token comment"># to make the axes symmetric</span>
+
+theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># 0, ...,... , tau </span>
+r <span class="token operator">=</span> <span class="token number">20</span>
+x<span class="token punctuation">,</span> y <span class="token operator">=</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+
+<span class="token comment"># draw a line to indicate the direction of circle</span>
+x<span class="token punctuation">,</span> y <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> r<span class="token operator">*</span>np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>tau<span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> r<span class="token operator">*</span>np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>tau<span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> <span class="token string">'g-'</span><span class="token punctuation">)</span>
+
+ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> <span class="token string">'r-'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<p>I hope you understand how to make lines and circles in matplotlib. Later we will use the code directly.</p>
+<h4>3. Now we will join the circles and lines in the figure</h4>
+<p>Note that center point of next circle is the coefficient point of a circle.
+I have already said that coefficients are nothing but information about the radius and radius direction in current circle. To rotate a circle, we can do:
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>∗</mo><msup><mi>e</mi><mrow><mi>j</mi><mi>n</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">c_n * e^{jnt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61528em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span></eq> where t is from 0 to tau.
+when t = tau/2, the circle will rotate about <eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><msup><mn>0</mn><mn>0</mn></msup></mrow><annotation encoding="application/x-tex">90^0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">9</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span></span></span></span></span></span></span></span></eq> anticlockwise.</p>
+<p>Now let’s make the function.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token keyword">def</span> <span class="token function">make_frame</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> time<span class="token punctuation">,</span> coeffs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">pass</span>
+</code></pre>
+<p>Here, <code>time</code> is list of angles from 0 to <code>tau</code>. this is responsible for animation.
+<code>i</code> is the frame number. It will go from 0 to <code>len(time)</code>.
+Now inside the function, we will follow following steps.</p>
+<h5>I. First of all we need to break the coefficients into x_coefficient and y_coefficient.</h5>
+<p>code:</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># sort the coefficient first. </span>
+coeffs <span class="token operator">=</span> sort_coeff<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+
+<span class="token comment"># split into x and y coefficients</span>
+x_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>real<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+y_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>imag<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+</code></pre>
+<h5>II. Loop to make all the circles for all coefficients</h5>
+<p>code inside function:</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># make all circles i.e epicycle</span>
+<span class="token keyword">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span><span class="token builtin">zip</span><span class="token punctuation">(</span>x_coeffs<span class="token punctuation">,</span> y_coeffs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># calculate radius of current circle</span>
+    r <span class="token operator">=</span> np<span class="token punctuation">.</span>linalg<span class="token punctuation">.</span>norm<span class="token punctuation">(</span><span class="token punctuation">[</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># similar to magnitude: sqrt(x^2+y^2)</span>
+    
+    theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># theta should go from 0 to 2*PI to get all points of circle</span>
+    x<span class="token punctuation">,</span> y <span class="token operator">=</span> center_x <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> center_y <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+    circles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+</code></pre>
+<p>You may be confused about the <code>circles[i].set_data(x, y)</code>
+We need to define it first. Let’s go out of the function and define all necessary parameters.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># make figure for animation</span>
+fig<span class="token punctuation">,</span> ax <span class="token operator">=</span> plt<span class="token punctuation">.</span>subplots<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># different plots to make epicycle</span>
+<span class="token comment"># there are -order to order numbers of circles</span>
+circles <span class="token operator">=</span> <span class="token punctuation">[</span>ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'r-'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token comment"># circle_lines are radius of each circles</span>
+circle_lines <span class="token operator">=</span> <span class="token punctuation">[</span>ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'b-'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token comment"># drawing is plot of final drawing</span>
+drawing<span class="token punctuation">,</span> <span class="token operator">=</span> ax<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'k-'</span><span class="token punctuation">,</span> linewidth<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span>
+
+<span class="token comment"># to fix the size of figure so that the figure does not get cropped/trimmed</span>
+ax<span class="token punctuation">.</span>set_xlim<span class="token punctuation">(</span>xlim_data<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">200</span><span class="token punctuation">,</span> xlim_data<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">200</span><span class="token punctuation">)</span>
+ax<span class="token punctuation">.</span>set_ylim<span class="token punctuation">(</span>ylim_data<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">-</span><span class="token number">200</span><span class="token punctuation">,</span> ylim_data<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">200</span><span class="token punctuation">)</span>
+
+<span class="token comment"># hide axes</span>
+ax<span class="token punctuation">.</span>set_axis_off<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># to have symmetric axes</span>
+ax<span class="token punctuation">.</span>set_aspect<span class="token punctuation">(</span><span class="token string">'equal'</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Again let’s go inside the function and proceed the code.
+Now we will make the radius line.</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># center points for fisrt circle</span>
+center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span>
+
+<span class="token comment"># make all circles i.e epicycle</span>
+<span class="token keyword">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span><span class="token builtin">zip</span><span class="token punctuation">(</span>x_coeffs<span class="token punctuation">,</span> y_coeffs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># calculate radius of current circle</span>
+    r <span class="token operator">=</span> np<span class="token punctuation">.</span>linalg<span class="token punctuation">.</span>norm<span class="token punctuation">(</span><span class="token punctuation">[</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># similar to magnitude: sqrt(x^2+y^2)</span>
+    
+    theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># theta should go from 0 to 2*PI to get all points of circle</span>
+    x<span class="token punctuation">,</span> y <span class="token operator">=</span> center_x <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> center_y <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+    circles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+    
+    <span class="token comment"># draw a line to indicate the direction of circle</span>
+    x<span class="token punctuation">,</span> y <span class="token operator">=</span> <span class="token punctuation">[</span>center_x<span class="token punctuation">,</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>center_y<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff<span class="token punctuation">]</span>
+    circle_lines<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+    
+    <span class="token comment"># calculate center for next circle</span>
+    center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff
+</code></pre>
+<p>What is the damn <code>i</code> for??
+How to make animation??
+Remember!!!
+We need to multiply coefficient with exponential term as discussed already.
+So, let’s multiply the coefficients with exponential term before sorting out.
+<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>c</mi><mi>n</mi></msub><mo>∗</mo><msup><mi>e</mi><mrow><mi>j</mi><mi>n</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">c_n * e^{jnt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61528em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span></eq></p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># exponential term to be multiplied with coefficient </span>
+exp_term <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span>np<span class="token punctuation">.</span>exp<span class="token punctuation">(</span>n<span class="token operator">*</span>t<span class="token operator">*</span><span class="token number">1j</span><span class="token punctuation">)</span> <span class="token keyword">for</span> n <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token comment"># sort the terms of fourier expression</span>
+coeffs <span class="token operator">=</span> sort_coeff<span class="token punctuation">(</span>coeffs<span class="token operator">*</span>exp_term<span class="token punctuation">)</span>
+</code></pre>
+<h4>Code upto now should be like:</h4>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token keyword">def</span> <span class="token function">make_frame</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> time<span class="token punctuation">,</span> coeffs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> pbar
+    <span class="token comment"># get t from time</span>
+    t <span class="token operator">=</span> time<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+
+    <span class="token comment"># exponential term to be multiplied with coefficient </span>
+    <span class="token comment"># this is responsible for making rotation of circle</span>
+    exp_term <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span>np<span class="token punctuation">.</span>exp<span class="token punctuation">(</span>n<span class="token operator">*</span>t<span class="token operator">*</span><span class="token number">1j</span><span class="token punctuation">)</span> <span class="token keyword">for</span> n <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># sort the terms of fourier expression</span>
+    coeffs <span class="token operator">=</span> sort_coeff<span class="token punctuation">(</span>coeffs<span class="token operator">*</span>exp_term<span class="token punctuation">)</span> <span class="token comment"># coeffs*exp_term makes the circle rotate. </span>
+    <span class="token comment"># coeffs itself gives only direction and size of circle</span>
+
+    <span class="token comment"># split into x and y coefficients</span>
+    x_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>real<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+    y_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>imag<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+
+    <span class="token comment"># center points for fisrt circle</span>
+    center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span>
+
+    <span class="token comment"># make all circles i.e epicycle</span>
+    <span class="token keyword">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span><span class="token builtin">zip</span><span class="token punctuation">(</span>x_coeffs<span class="token punctuation">,</span> y_coeffs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># calculate radius of current circle</span>
+        r <span class="token operator">=</span> np<span class="token punctuation">.</span>linalg<span class="token punctuation">.</span>norm<span class="token punctuation">(</span><span class="token punctuation">[</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># similar to magnitude: sqrt(x^2+y^2)</span>
+
+        <span class="token comment"># draw circle with given radius at given center points of circle</span>
+        <span class="token comment"># circumference points: x = center_x + r * cos(theta), y = center_y + r * sin(theta)</span>
+        theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># theta should go from 0 to 2*PI to get all points of circle</span>
+        x<span class="token punctuation">,</span> y <span class="token operator">=</span> center_x <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> center_y <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+        circles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+
+        <span class="token comment"># draw a line to indicate the direction of circle</span>
+        x<span class="token punctuation">,</span> y <span class="token operator">=</span> <span class="token punctuation">[</span>center_x<span class="token punctuation">,</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>center_y<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff<span class="token punctuation">]</span>
+        circle_lines<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+
+        <span class="token comment"># calculate center for next circle</span>
+        center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff
+</code></pre>
+<p>Now we need to draw the figure. As I have already said that the last center point we get is the point of figure.
+We need to save all the last points <code>(center_x, center_y)</code> in a list say <code>draw_x</code> and <code>draw_y</code>.</p>
+<h4>THe whole code of <code>make_frame()</code> should be:</h4>
+<pre class="language-python rounded mr-2"><code class="language-python">draw_x<span class="token punctuation">,</span> draw_y <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">def</span> <span class="token function">make_frame</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> time<span class="token punctuation">,</span> coeffs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> pbar
+    <span class="token comment"># get t from time</span>
+    t <span class="token operator">=</span> time<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+
+    <span class="token comment"># exponential term to be multiplied with coefficient </span>
+    <span class="token comment"># this is responsible for making rotation of circle</span>
+    exp_term <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span>np<span class="token punctuation">.</span>exp<span class="token punctuation">(</span>n<span class="token operator">*</span>t<span class="token operator">*</span><span class="token number">1j</span><span class="token punctuation">)</span> <span class="token keyword">for</span> n <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token operator">-</span>order<span class="token punctuation">,</span> order<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># sort the terms of fourier expression</span>
+    coeffs <span class="token operator">=</span> sort_coeff<span class="token punctuation">(</span>coeffs<span class="token operator">*</span>exp_term<span class="token punctuation">)</span> <span class="token comment"># coeffs*exp_term makes the circle rotate. </span>
+    <span class="token comment"># coeffs itself gives only direction and size of circle</span>
+
+    <span class="token comment"># split into x and y coefficients</span>
+    x_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>real<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+    y_coeffs <span class="token operator">=</span> np<span class="token punctuation">.</span>imag<span class="token punctuation">(</span>coeffs<span class="token punctuation">)</span>
+
+    <span class="token comment"># center points for fisrt circle</span>
+    center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span>
+
+    <span class="token comment"># make all circles i.e epicycle</span>
+    <span class="token keyword">for</span> i<span class="token punctuation">,</span> <span class="token punctuation">(</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">)</span> <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span><span class="token builtin">zip</span><span class="token punctuation">(</span>x_coeffs<span class="token punctuation">,</span> y_coeffs<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># calculate radius of current circle</span>
+        r <span class="token operator">=</span> np<span class="token punctuation">.</span>linalg<span class="token punctuation">.</span>norm<span class="token punctuation">(</span><span class="token punctuation">[</span>x_coeff<span class="token punctuation">,</span> y_coeff<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment"># similar to magnitude: sqrt(x^2+y^2)</span>
+
+        <span class="token comment"># draw circle with given radius at given center points of circle</span>
+        <span class="token comment"># circumference points: x = center_x + r * cos(theta), y = center_y + r * sin(theta)</span>
+        theta <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span> <span class="token comment"># theta should go from 0 to 2*PI to get all points of circle</span>
+        x<span class="token punctuation">,</span> y <span class="token operator">=</span> center_x <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>theta<span class="token punctuation">)</span><span class="token punctuation">,</span> center_y <span class="token operator">+</span> r <span class="token operator">*</span> np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>theta<span class="token punctuation">)</span>
+        circles<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+
+        <span class="token comment"># draw a line to indicate the direction of circle</span>
+        x<span class="token punctuation">,</span> y <span class="token operator">=</span> <span class="token punctuation">[</span>center_x<span class="token punctuation">,</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>center_y<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff<span class="token punctuation">]</span>
+        circle_lines<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span>
+
+        <span class="token comment"># calculate center for next circle</span>
+        center_x<span class="token punctuation">,</span> center_y <span class="token operator">=</span> center_x <span class="token operator">+</span> x_coeff<span class="token punctuation">,</span> center_y <span class="token operator">+</span> y_coeff
+    
+    <span class="token comment"># center points now are points from last circle</span>
+    <span class="token comment"># these points are used as drawing points</span>
+    draw_x<span class="token punctuation">.</span>append<span class="token punctuation">(</span>center_x<span class="token punctuation">)</span>
+    draw_y<span class="token punctuation">.</span>append<span class="token punctuation">(</span>center_y<span class="token punctuation">)</span>
+
+    <span class="token comment"># draw the curve from last point</span>
+    drawing<span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>draw_x<span class="token punctuation">,</span> draw_y<span class="token punctuation">)</span>
+</code></pre>
+<h4>4. Making animation with matplotlib</h4>
+<p>Take your time and understand this code.
+An example code:</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>animation <span class="token keyword">as</span> animation
+
+<span class="token keyword">def</span> <span class="token function">update_line</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> data<span class="token punctuation">,</span> line<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    line<span class="token punctuation">.</span>set_data<span class="token punctuation">(</span>data<span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span> <span class="token punctuation">:</span>num<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> line<span class="token punctuation">,</span> 
+
+<span class="token comment"># Set up formatting for the movie files</span>
+Writer <span class="token operator">=</span> animation<span class="token punctuation">.</span>writers<span class="token punctuation">[</span><span class="token string">'ffmpeg'</span><span class="token punctuation">]</span>
+writer <span class="token operator">=</span> Writer<span class="token punctuation">(</span>fps<span class="token operator">=</span><span class="token number">15</span><span class="token punctuation">,</span> metadata<span class="token operator">=</span><span class="token builtin">dict</span><span class="token punctuation">(</span>artist<span class="token operator">=</span><span class="token string">'Me'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> bitrate<span class="token operator">=</span><span class="token number">1800</span><span class="token punctuation">)</span>
+
+fig1 <span class="token operator">=</span> plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+data <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>rand<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">)</span>
+l<span class="token punctuation">,</span> <span class="token operator">=</span> plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'r-'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlim<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>ylim<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">'x'</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">'test'</span><span class="token punctuation">)</span>
+anim <span class="token operator">=</span> animation<span class="token punctuation">.</span>FuncAnimation<span class="token punctuation">(</span>fig1<span class="token punctuation">,</span> update_line<span class="token punctuation">,</span> <span class="token number">25</span><span class="token punctuation">,</span> fargs<span class="token operator">=</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> l<span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                   interval<span class="token operator">=</span><span class="token number">50</span><span class="token punctuation">)</span>
+anim<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string">'lines.mp4'</span><span class="token punctuation">,</span> writer<span class="token operator">=</span>writer<span class="token punctuation">)</span>
+</code></pre>
+<p>Now, we will use the same style of code for our code.
+In place of <code>update_line()</code>, we will use <code>make_frame()</code> function.
+The first parameter is <code>i</code> in <code>make_frame()</code> which will be frame number supplied over time.
+Other parameters are placed in <code>fargs=(time, c)</code> as we need time and coefficients as argument.
+Let’s say we want the total frames to be 300. Then we need to put <code>frames=300</code> in <code>animation.FuncAnimation()</code> .
+<code>time</code> should be from 0 to <code>tau</code> with 300 numbers.
+So the code will be like:</p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># make animation</span>
+<span class="token comment"># time is array from 0 to tau </span>
+frames <span class="token operator">=</span> <span class="token number">300</span>
+time <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> tau<span class="token punctuation">,</span> num<span class="token operator">=</span>frames<span class="token punctuation">)</span>
+anim <span class="token operator">=</span> animation<span class="token punctuation">.</span>FuncAnimation<span class="token punctuation">(</span>fig<span class="token punctuation">,</span> make_frame<span class="token punctuation">,</span> frames<span class="token operator">=</span>frames<span class="token punctuation">,</span> fargs<span class="token operator">=</span><span class="token punctuation">(</span>time<span class="token punctuation">,</span> c<span class="token punctuation">)</span><span class="token punctuation">,</span>interval<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">)</span>
+anim<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string">'epicycle.mp4'</span><span class="token punctuation">,</span> writer<span class="token operator">=</span>writer<span class="token punctuation">)</span>
+pbar<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"completed: epicycle.mp4"</span><span class="token punctuation">)</span>
+</code></pre>
+<p>Hurray!!! We are done.</p>
+<p>I am very thankful to <a href="https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw">youtube/3Blue1Brown</a> for their wonderful explanation.<br>
+Link to Git Repository: <a href="https://github.com/Amritaryal44/drawing-with-DFT-and-epicycle">Drawing with DFT and epicycle</a></p>
+
+                    <hr class="mt-5">
+                    <div class="tag-list my-5">
+                        <span>Tags: </span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">DFT</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">Descrete Fourier Transform</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">Fourier Series</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">Epicycle</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">Mathematics</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 sidebar wow fadeInUp">
+                    <div class="container wow fadeInUp">
+                        <form method="get" action="/search.html" class="blog-search-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search my posts" name="q" autocomplete="off">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="sidebar-box wow fadeInUp">
+                        <h3 class="heading-sidebar">Other Posts</h3>
+                        <ul class="categories p-0">
+                            <li>
+                                <a href="/category-post.html?category=cryptography-and-security">
+                                    Cryptography And Security
+                                    &nbsp;<span>(1)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/category-post.html?category=mathematics-and-engineering">
+                                    Mathematics And Engineering
+                                    &nbsp;<span>(1)</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="posts wow fadeInUp" id="recent-posts">
+                        <!-- recent posts created here dynamically -->
+                    </div>
+                    <div class="posts wow fadeInUp" id="related-posts">
+                        <!-- related posts created here dynamically -->
+                    </div>
+                    <div id="dinamicMenu"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<!-- Contact -->
+<section id="contact" class="pb-5 wow fadeIn">
+    <script type="text/javascript">var submitted = false;</script>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location='thankyou.html';}"></iframe>
+    <div class="container pb-5 pt-5 wow fadeInUp">
+        <div class="row">
+            <div class="col-lg-12 text-center contact-title">
+                <h2 class="text-uppercase title-text">Contact Me</h2>
+                <p class="para">
+                    Feel free to contact me
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container contact-box">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 d-flex flex-column p-5 wow fadeInUp">
+                <p class="msg-title p-3">Any message you want to leave?</p>
+                <form action="https://docs.google.com/forms/d/e/1FAIpQLSfoNmKVbNxysnoJZhM2-9iF5goNqf6G3Rh7UM1RY7wkq39Xuw/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="name" placeholder="Your Name" name="entry.2082576387">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="Your Email" name="entry.631349439">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control msg" id="msgme" rows="3" placeholder="The message here..." name="entry.2007933467"></textarea>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-outline-info">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="contact-detail col-md-6 col-sm-12 d-flex flex-column justify-content-center wow fadeInUp">
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Address</div>
+                        <div class="item-tail p-4">
+                            Butwal, Nepal
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Phone</div>
+                        <div class="item-tail p-4">(+977) 9867209460</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Email</div>
+                        <div class="item-tail p-4">
+                            amritaryal44@gmail.com
+                        </div>
+                    </div>
+                </div>
+                <div class="social">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Social</div>
+                        <div class="item-tail p-4">
+                            <div class="row">
+                                <span class="col-3"><a href="https://www.facebook.com/amrit.aryal.9081" class="fab fa-facebook"></a></span>
+                                <span class="col-3"><a href="https://twitter.com/amritaryal44" class="fab fa-twitter"></a></span>
+                                <span class="col-3"><a href="https://www.instagram.com/its_elixir44/" class="fab fa-instagram"></a></span>
+                                <span class="col-3"><a href="https://github.com/Amritaryal44" class="fab fa-github"></a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="footer">
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <div id="copyright">
+            <ul>
+                <li>© Amrit Aryal</li>
+                <!-- Please do not change it. I made it free to use for you. At least, I deserve a credit. -->
+                <li>Design with&nbsp;<i class="fa fa-heart repeat animated rubberBand" aria-hidden="true"></i>&nbsp;by&nbsp;<a href="https://amritaryal.com.np">amrit</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+    <!-- scripts -->
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/slick/slick.min.js"></script>
+    <script type="text/javascript" src="/js/wow.min.js"></script>
+    <script src="/js/jquery-dynamic-content-menu.js"></script>
+    <script src="/js/prism.js"></script>
+    <script src="/js/fuzzyset.js"></script>
+    <script src="/js/related-post.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hide Your secret videos inside any other videos. It supports video of any aspect ratio. It hides audio along with the video.
+It follows the LSB algorithm for encryption">
+    <title>Video Steganography - Amrit</title>
+
+    <!-- bootstrap css file -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- font awesome css file -->
+    <link rel="stylesheet" href="/css/all.min.css">
+
+    <!-- Animation css file -->
+    <link rel="stylesheet" href="/css/animate.min.css">
+
+    <!-- slick slider -->
+    <link rel="stylesheet" type="text/css" href="/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css" />
+
+    <!-- TOC -->
+    <link rel="stylesheet" href="/css/jquery-dynamic-content-menu.css">
+
+    <!-- Prism for code prettifier -->
+    <link rel="stylesheet" href="/css/prism.css">
+
+    <!-- Katex maths render -->
+    <link rel="stylesheet" href="/css/katex.min.css">
+    <link rel="stylesheet" href="/css/texmath.min.css">
+
+    <!-- custom css file -->
+    <link rel="stylesheet" href="/css/partials/_global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+</head>
+
+<body>
+    <div class="d-none" id="post-id" post-id="1"></div>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md fixed-top not-shrink animated slideInDown">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand repeat animated tada" href="/"><span>Amrit</span></a>
+
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            Menu
+          </button>
+
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#home">home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#about">about</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="index.html#gallery">gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#posts">posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link posts" href="/index.html#services">services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+    <section class="banner mb-5" id="home">
+        <div class="text container">
+            <div class="d-flex flex-column justify-content-end h-100">
+                <h1 class="animated fadeInDownBig mb-4">Video Steganography</h1>
+            </div>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 wow fadeInUp" id="md-html">
+                    <p id="post-date"><i class="far fa-clock"></i>&nbsp;Sep 02, 2020</p>
+                    <h2 class="mb-3 mt-5 toc-h2">Video Steganography</h2>
+<p>Hide Your secret videos inside any other videos.</p>
+<p>Github repository: <a href="https://github.com/Amritaryal44/Video-Steganography">Click here</a></p>
+<h2 class="mb-3 mt-5 toc-h2">Example</h2>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">Cover video where secret video is to be hidden</th>
+<th style="text-align:center">Secret Video to be hidden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/1/1-1.gif" alt="Cover Video" class="img-fluid"></p></td>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/1/1-2.gif" alt="Secret Video" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="text-align:center">cover video with hidden secret video</th>
+<th style="text-align:center">Revealed secret video</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/1/1-3.gif" alt="Encrypted Video" class="img-fluid"></p></td>
+<td style="text-align:center"><p class="hover-img"><img src="/posts/images/1/1-4.gif" alt="Decrypted Video" class="img-fluid"></p></td>
+</tr>
+</tbody>
+</table>
+<h2 class="mb-3 mt-5 toc-h2">Features</h2>
+<ul>
+<li>Supports video of any aspect ratio</li>
+<li>Encodes audio along with video</li>
+</ul>
+<p>Please ensure:</p>
+<ul>
+<li>Secret video files must have less frame count then that of cover video</li>
+<li>We will lose Audio quality and audio of secret video may be noticeable even after encryption [ Currently working for it ]</li>
+<li>ffmpeg  needs to be installed and should be available in shell command</li>
+<li>Encrypted video should not be converted into any other forms because we don’t want to compress the video to preserve the secret data</li>
+</ul>
+<h2 class="mb-3 mt-5 toc-h2">Installation</h2>
+<p>Install ffmpeg.</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ sudo apt-get update
+$ sudo apt-get install ffmpeg
+</code></pre>
+<p>If you are using windows, install it from <a href="https://ffmpeg.org">here</a>.
+Check if you can use it in shell/terminal:</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ ffmpeg 
+</code></pre>
+<p>Clone the repository</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ git clone https://github.com/Amritaryal44/Video-Steganography.git
+</code></pre>
+<p>Install all package requirements for python</p>
+<pre class="language-sh rounded mr-2"><code class="language-sh">$ pip install -r requirements.txt
+</code></pre>
+<p><strong>To hide the video, use encrypt.py:</strong></p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># path of cover video and secret video</span>
+cover_path <span class="token operator">=</span> <span class="token string">"v1.mp4"</span>
+secret_path <span class="token operator">=</span> <span class="token string">"v2.mp4"</span>
+</code></pre>
+<ul>
+<li><code>cover_path</code> : Stores the path of cover video in which secret video is to be hidden.</li>
+<li><code>secret_path</code> : Stores the path of secret video which is to be hidden.</li>
+</ul>
+<p>Encrypted video is saved in <code>out/covered.mkv</code></p>
+<p><strong>To reveal the secret video, use decrypt.py:</strong></p>
+<pre class="language-python rounded mr-2"><code class="language-python"><span class="token comment"># path to encrypted file</span>
+enc_path <span class="token operator">=</span> <span class="token string">"out/covered.mkv"</span>
+</code></pre>
+<ul>
+<li><code>cover_path</code> : Stores the path of cover video in which secret video is to be hidden.</li>
+<li><code>secret_path</code> : Stores the path of secret video which is to be hidden.</li>
+</ul>
+<p>Decrypted video is saved in <code>out/secret_revealed.mkv</code></p>
+<p><strong>Video Reference</strong></p>
+<ul>
+<li>cover video : <a href="https://www.youtube.com/watch?v=OnFbsxS-thw">Link</a></li>
+<li>secret video : <a href="https://www.youtube.com/watch?v=mvVu9FI4bd4">Link</a></li>
+</ul>
+<h2 class="mb-3 mt-5 toc-h2">LICENSE</h2>
+<p>MIT</p>
+
+                    <hr class="mt-5">
+                    <div class="tag-list my-5">
+                        <span>Tags: </span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">cryptography</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">  security</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">  hide video</span>
+                        <span class="badge badge-secondary p-1" style="color:aliceblue; font-weight: bolder;">  hide audio</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 sidebar wow fadeInUp">
+                    <div class="container wow fadeInUp">
+                        <form method="get" action="/search.html" class="blog-search-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search my posts" name="q" autocomplete="off">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="sidebar-box wow fadeInUp">
+                        <h3 class="heading-sidebar">Other Posts</h3>
+                        <ul class="categories p-0">
+                            <li>
+                                <a href="/category-post.html?category=cryptography-and-security">
+                                    Cryptography And Security
+                                    &nbsp;<span>(1)</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/category-post.html?category=mathematics-and-engineering">
+                                    Mathematics And Engineering
+                                    &nbsp;<span>(1)</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="posts wow fadeInUp" id="recent-posts">
+                        <!-- recent posts created here dynamically -->
+                    </div>
+                    <div class="posts wow fadeInUp" id="related-posts">
+                        <!-- related posts created here dynamically -->
+                    </div>
+                    <div id="dinamicMenu"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<!-- Contact -->
+<section id="contact" class="pb-5 wow fadeIn">
+    <script type="text/javascript">var submitted = false;</script>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location='thankyou.html';}"></iframe>
+    <div class="container pb-5 pt-5 wow fadeInUp">
+        <div class="row">
+            <div class="col-lg-12 text-center contact-title">
+                <h2 class="text-uppercase title-text">Contact Me</h2>
+                <p class="para">
+                    Feel free to contact me
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container contact-box">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 d-flex flex-column p-5 wow fadeInUp">
+                <p class="msg-title p-3">Any message you want to leave?</p>
+                <form action="https://docs.google.com/forms/d/e/1FAIpQLSfoNmKVbNxysnoJZhM2-9iF5goNqf6G3Rh7UM1RY7wkq39Xuw/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="name" placeholder="Your Name" name="entry.2082576387">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="Your Email" name="entry.631349439">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control msg" id="msgme" rows="3" placeholder="The message here..." name="entry.2007933467"></textarea>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-outline-info">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="contact-detail col-md-6 col-sm-12 d-flex flex-column justify-content-center wow fadeInUp">
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Address</div>
+                        <div class="item-tail p-4">
+                            Butwal, Nepal
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Phone</div>
+                        <div class="item-tail p-4">(+977) 9867209460</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Email</div>
+                        <div class="item-tail p-4">
+                            amritaryal44@gmail.com
+                        </div>
+                    </div>
+                </div>
+                <div class="social">
+                    <div class="d-flex">
+                        <div class="item-head p-4">Social</div>
+                        <div class="item-tail p-4">
+                            <div class="row">
+                                <span class="col-3"><a href="https://www.facebook.com/amrit.aryal.9081" class="fab fa-facebook"></a></span>
+                                <span class="col-3"><a href="https://twitter.com/amritaryal44" class="fab fa-twitter"></a></span>
+                                <span class="col-3"><a href="https://www.instagram.com/its_elixir44/" class="fab fa-instagram"></a></span>
+                                <span class="col-3"><a href="https://github.com/Amritaryal44" class="fab fa-github"></a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="footer">
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <div id="copyright">
+            <ul>
+                <li>© Amrit Aryal</li>
+                <!-- Please do not change it. I made it free to use for you. At least, I deserve a credit. -->
+                <li>Design with&nbsp;<i class="fa fa-heart repeat animated rubberBand" aria-hidden="true"></i>&nbsp;by&nbsp;<a href="https://amritaryal.com.np">amrit</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+    <!-- scripts -->
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/slick/slick.min.js"></script>
+    <script type="text/javascript" src="/js/wow.min.js"></script>
+    <script src="/js/jquery-dynamic-content-menu.js"></script>
+    <script src="/js/prism.js"></script>
+    <script src="/js/fuzzyset.js"></script>
+    <script src="/js/related-post.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>
