@@ -112,10 +112,10 @@
                 <div class="col-lg-8 wow fadeInUp" id="md-html">
                     <p id="post-date"><i class="far fa-clock"></i>&nbsp;May 24, 2021</p>
                     <h1>How to do multiple tasks in Arduino</h1>
-<p><p class="hover-img"><img src="/posts/images/3/3-2.jpg" alt="Post Thumbnail" class="img-fluid"></p></p>
-<p>Have you ever felt difficulties while trying to do multiple tasks in Arduino?<br>
+<p><a href="http://www.youtube.com/watch?v=Ol6x5mjeu4w"><p class="hover-img"><img src="/posts/images/3/3-2.jpg" alt="Post Thumbnail" class="img-fluid"></p></a></p>
+<p>Have you ever felt difficulties while trying to do multiple tasks in Arduino?
 If yes, this post is for you <img class="emoji" draggable="false" alt="😉" src="https://twemoji.maxcdn.com/v/13.0.1/72x72/1f609.png">.</p>
-<p>Let’s say you want to execute several tasks at the same time.<br>
+<p>Let’s say you want to execute several tasks at the same time.
 For example:</p>
 <ul>
 <li>Reading data from Serial Monitor</li>
@@ -134,13 +134,13 @@ For example:</p>
 <li>Task 4 : Printing brightness of LED (Task 3) every 5 seconds.</li>
 </ul>
 <blockquote class="blockquote pl-2 py-1" style="border-left: 5px solid #eee;">
-<p>For <strong>Task 3</strong>, User can input a number from 0 to 255 where<br>
-0 means <code>Totally Off</code><br>
+<p>For <strong>Task 3</strong>, User can input a number from 0 to 255 where
+0 means <code>Totally Off</code>
 1 means  <code>Full brightness</code></p>
 </blockquote>
 <h2 class="mb-3 mt-5 toc-h2">2. Identifying Tasks that are affecting program workflow</h2>
 <p>After we defined our project objective, we need to identify the tasks that are affecting the program workflow.</p>
-<p>Let me take Task 1 which is about blinking LED every 1 second.<br>
+<p>Let me take Task 1 which is about blinking LED every 1 second.
 Here, We can define Task 1 with code below:</p>
 <pre class="language-arduino rounded mr-2"><code class="language-arduino"><span class="token keyword">void</span> <span class="token keyword">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token comment">// TODO: Task 1</span>
@@ -172,7 +172,7 @@ Here, We can define Task 1 with code below:</p>
 </code></pre>
 <p>Here, For glowing the LED whenever button is pressed, <code>digitalRead(BTN)</code> needs to be executed to read if BTN is pressed or not. But due to <code>delay()</code> function, the arduino will take time for task 1 to complete and then can read the button status.</p>
 <p><strong>So, we can conclude that Task 1 is affecting the program flow</strong></p>
-<p>And Is there any other tasks affecting the program flow?<br>
+<p>And Is there any other tasks affecting the program flow?
 Yes… It’s <strong>Task 4</strong> because It also waits for 5 seconds and print brightness.</p>
 <blockquote class="blockquote pl-2 py-1" style="border-left: 5px solid #eee;">
 <p>To identify them, you just need to know whether the task is taking long time or not.</p>
@@ -200,8 +200,8 @@ Yes… It’s <strong>Task 4</strong> because It also waits for 5 seconds and pr
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>In the code, <code>currentTime</code> reads and stores number of milliseconds elapsed since you power on the Arduino. When <code>currentTime</code> is greater than <code>prevTime</code> by 1000 ms then <code>doSomething()</code> is called.<br>
-It means that <code>doSomething()</code> function is called every 1000 ms (1 second) without affecting the program cycle i.e. no delay/no pause.<br>
+<p>In the code, <code>currentTime</code> reads and stores number of milliseconds elapsed since you power on the Arduino. When <code>currentTime</code> is greater than <code>prevTime</code> by 1000 ms then <code>doSomething()</code> is called.
+It means that <code>doSomething()</code> function is called every 1000 ms (1 second) without affecting the program cycle i.e. no delay/no pause.
 So, we can use this concept to replace <code>delay()</code> function from our project code.</p>
 <h2 class="mb-3 mt-5 toc-h2">4. Replacing delay with millis() in our project</h2>
 <p>Replace the <strong>Task 1</strong> code with <strong>millis() code</strong> we use above.</p>
@@ -222,7 +222,7 @@ So, we can use this concept to replace <code>delay()</code> function from our pr
     <span class="token comment">// TODO: Other tasks</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<p>Do the same thing for <strong>Task 4</strong>. Difference is that we replace doSomething with<br>
+<p>Do the same thing for <strong>Task 4</strong>. Difference is that we replace doSomething with
 Serail Printing Code.</p>
 <h2 class="mb-3 mt-5 toc-h2">5. Final Code</h2>
 <pre class="language-arduino rounded mr-2"><code class="language-arduino"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token expression">LED1 <span class="token number">13</span></span></span>
